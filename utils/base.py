@@ -1,16 +1,16 @@
 import os
 import platform
 from shutil import copy
+from subprocess import Popen, PIPE
 
 class Base():
     def __init__(self, base=None):
-        self.newchallengeitems = ['']
+        self.newchallengeitems = ['challenge.py']
         self.newchallengedirs = ['ghidra']
+        self.python_modules = ['pip','pwntools']
+        self.packages = ['python3-pip', 'python3-dev', 'git', 'libssl-dev', 
+                'libffi-dev']
         self.basedir = base
-        if base:
-            self.ctfdir = os.path.join(self.basedir, "CTF")
-        else:
-            self.ctfdir = "CTF"
 
     def _copy_items(self):
         for i in self.newchallengeitems:
@@ -20,6 +20,14 @@ class Base():
     def _make_new_dirs(self):
         for i in self.newchallengedirs:
             os.mkdir(i)
+
+    def installer(self):
+        pass
+    
+    def execute_cmd(self, cmd):
+        proc = Popen(cmd, stdin=PIPE, stdout=PIPE)
+        proc.wait()
+        return proc.returncode
 
     def newctf(self, newprojectdir):
         os.curdir
@@ -43,10 +51,10 @@ class Linux(Base):
         Base.__init__(self, base)
 
 
-def check_os():
+def check_os(basedir):
     os = platform.system()
     if os == 'Windows':
-        os = Windows()
+        os = Windows(basedir)
     else:
-        os = Linux()
+        os = Linux(basedir)
     return os

@@ -1,15 +1,17 @@
+#!/usr/bin/env python3
+
 import sys
 import os
 
-try:
-    from utils import base
-except ModuleNotFoundError:
-    sys.path.append('utils')
-    from utils import base
+basedir = os.getcwd()
+basedir = basedir[:basedir.find('CTF')+3]
+sys.path.append(basedir)
+
+from utils.base import check_os
 
 def main():
-    os = base.check_os()
-    print(os.getcwd())
+    installed_os = check_os(basedir)
+    
 
 if __name__ == "__main__":
     main()
